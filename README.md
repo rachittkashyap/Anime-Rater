@@ -48,6 +48,17 @@ npm run preview          # preview the production build locally
 4. Deploy — the site is fully static + client-side, so no server function or database
    setup is required.
 
+## Deploying to Netlify
+
+1. Push this project to a GitHub repository.
+2. In Netlify: "Add new site" → "Import an existing project" → pick the repo.
+3. Build command: `npm run build`, publish directory: `dist` — Netlify picks these up
+   automatically from `netlify.toml`.
+4. `public/_redirects` (and the matching rule in `netlify.toml`) route every path to
+   `index.html` with a 200, which is required for a client-side router like this one —
+   without it, refreshing on a page like `/anime/21-one-piece` would 404.
+5. Deploy — no environment variables or database needed here either.
+
 ## Extending the sitemap
 
 `public/sitemap.xml` currently lists the static routes only, since individual
