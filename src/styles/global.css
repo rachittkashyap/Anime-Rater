@@ -258,6 +258,37 @@ dl { margin: 0; }
 .anime-card--skeleton { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+/* ---------- Spinner ---------- */
+.spinner-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 60px 20px; }
+.spinner-wrap--full { min-height: 50vh; }
+.spinner { position: relative; display: inline-block; }
+.spinner--sm { width: 20px; height: 20px; }
+.spinner--md { width: 44px; height: 44px; }
+.spinner--lg { width: 64px; height: 64px; }
+.spinner__ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--accent);
+  border-right-color: var(--accent-2);
+  animation: spin .85s linear infinite;
+}
+.spinner__ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  z-index: -1;
+}
+.spinner--sm .spinner__ring { border-width: 2px; }
+.spinner--sm .spinner__ring::before { border-width: 2px; inset: -2px; }
+.spinner--lg .spinner__ring { border-width: 4px; }
+.spinner__label { color: var(--text-muted); font-size: 14px; font-weight: 500; letter-spacing: .2px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn--loading { display: inline-flex; align-items: center; gap: 8px; opacity: .8; pointer-events: none; }
+
 /* ---------- State messages ---------- */
 .state-message { color: var(--text-muted); text-align: center; padding: 40px 20px; font-size: 15px; }
 .state-message--error { color: var(--danger); }

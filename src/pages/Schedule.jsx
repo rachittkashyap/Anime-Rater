@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Rating from '../components/Rating';
 import AdSlot from '../components/AdSlot';
+import Spinner from '../components/Spinner';
 import { getSchedule } from '../api/animeService';
 import { safe, slugify } from '../utils/formatters';
 
@@ -50,7 +51,7 @@ export default function Schedule() {
       </Helmet>
       <h1 className="page__title">Anime Schedule</h1>
 
-      {state.loading && <div className="state-message">Loading schedule…</div>}
+      {state.loading && <Spinner label="Loading schedule…" size="lg" fullHeight />}
       {state.error && (
         <div className="state-message state-message--error">
           Anime data is temporarily unavailable. Please try again.

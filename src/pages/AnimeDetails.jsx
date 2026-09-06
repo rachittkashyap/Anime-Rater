@@ -5,6 +5,7 @@ import Rating from '../components/Rating';
 import GenreBadge from '../components/GenreBadge';
 import AnimeGrid from '../components/AnimeGrid';
 import AdSlot from '../components/AdSlot';
+import Spinner from '../components/Spinner';
 import { getAnimeDetails, getAnimeEpisodes, getAnimeRecommendations } from '../api/animeService';
 import { isInWatchlist, toggleWatchlist } from '../utils/storage';
 import { safe, safeEpisodes, safeYear, safeGenres, truncate } from '../utils/formatters';
@@ -57,7 +58,7 @@ export default function AnimeDetails() {
   if (loading) {
     return (
       <div className="page">
-        <div className="state-message">Loading anime details…</div>
+        <Spinner label="Loading anime details…" size="lg" fullHeight />
       </div>
     );
   }
