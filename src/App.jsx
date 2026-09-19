@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
-import SiteLayout from './components/SiteLayout';
-import AnalyticsTracker from './components/AnalyticsTracker';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Trending from './pages/Trending';
 import Seasonal from './pages/Seasonal';
@@ -11,7 +11,6 @@ import Genre from './pages/Genre';
 import Search from './pages/Search';
 import AnimeDetails from './pages/AnimeDetails';
 import Watchlist from './pages/Watchlist';
-import Admin from './pages/Admin';
 
 function NotFound() {
   return (
@@ -26,14 +25,10 @@ function NotFound() {
 
 export default function App() {
   return (
-    <>
-      <AnalyticsTracker />
-      <Routes>
-        {/* Admin dashboard: separate page, no public navbar/footer */}
-        <Route path="/admin" element={<Admin />} />
-
-        {/* Public site */}
-        <Route element={<SiteLayout />}>
+    <div className="app-shell">
+      <Navbar />
+      <main className="app-content">
+        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/trending" element={<Trending />} />
           <Route path="/season" element={<Seasonal />} />
@@ -45,8 +40,9 @@ export default function App() {
           <Route path="/anime/:idSlug" element={<AnimeDetails />} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </>
+        </Routes>
+      </main>
+      <Footer />
+    </div>
   );
 }
