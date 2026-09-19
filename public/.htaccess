@@ -1,0 +1,11 @@
+# Apache (cPanel / Namecheap shared hosting): send every URL that isn't a real file
+# to index.html so React Router pages (/admin, /trending, /anime/21-one-piece ...) also
+# work on refresh and when opened directly. (Netlify uses _redirects instead.)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
