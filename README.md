@@ -1,8 +1,9 @@
 # AnimeHai.in
 
-Automated anime discovery & tracking platform. React + Vite, no backend, no database,
-no AI API. All anime data comes from free public APIs and is fetched live/cached in the
-browser.
+Automated anime discovery & tracking platform. React + Vite, no database, no AI API.
+All anime data comes from free public APIs and is fetched live/cached in the browser.
+The only server-side piece is a tiny Node server (`server/`) that stores visitor
+analytics in a JSON file for the `/admin` dashboard (see "Admin dashboard" below).
 
 ## Dual-API architecture (with automatic fallback)
 
@@ -33,11 +34,47 @@ storage of any personal data.
 
 ```bash
 npm install
-cp .env.example .env   # optional — defaults already point at the public endpoints
-npm run dev             # start local dev server
-npm run build            # production build to /dist
-npm run preview          # preview the production build locally
+cp .env.example .env    # then set ADMIN_PASSWORD (needed for /admin)
+npm run dev             # website (:5173) + analytics server (:3001) together
+npm run dev:web         # website only (no analytics / no /admin)
+npm run build           # production build to /dist
+npm start               # analytics server + serves the built site from /dist
 ```
+
+## Admin dashboard (`/admin`)
+
+Open `/admin`, enter `ADMIN_PASSWORD` (from `.env`) and you get website metrics for the
+**last hour, 24 hours, 7 days and 30 days**:
+
+- **Visitors, visits (sessions), page views, live now**
+- **Time on site** — average per visit + a "how long visitors stay" breakdown
+- **Where visitors come from** — traffic source (Google, Instagram, Direct, other sites,
+  `?utm_source=` links) and **country**
+- Traffic-over-time chart, top pages, devices, browsers
+
+How it works — no database, no cookies, no IP addresses stored:
+
+- `src/utils/analytics.js` (mounted through `AnalyticsTracker`) sends a page view on every
+  route change and "active seconds" heartbeats while the tab is visible.
+- `server/index.js` receives them at `POST /api/hit` and keeps everything in
+  `server/data/analytics.json` (git-ignored; written atomically a few seconds after each
+  change; history older than 45 days is pruned automatically).
+- `GET /api/admin/stats` is password-protected (signed 12-hour token, login attempts are
+  rate-limited). Bots/crawlers, `/admin` itself and visitors with "Do Not Track" are not counted.
+- On `/admin` use **"Don't count my visits"** so your own browsing doesn't inflate the numbers.
+- Country comes from the host's IP-geo header when available (Cloudflare, Vercel, CloudFront);
+  otherwise it's derived from the visitor's browser timezone.
+- Ranges are whole buckets ending now, on the admin's local clock: "7 days" = today + the
+  6 days before, "24 hours" = the current hour + the 23 before.
+
+Preview the dashboard with fake data: stop the server, run `npm run seed:demo`, start again.
+
+**Hosting note:** the JSON file needs a server with a *persistent disk*. Netlify/Vercel
+serve only static files (their serverless filesystem is wiped), so run the Node server
+(`npm run build && npm start`) on something like Render (with a disk), Railway (volume),
+Fly.io, or a VPS. If the website stays on Netlify, deploy the server separately and set
+`VITE_API_BASE_URL` (frontend) and `CORS_ORIGIN` (server) — see `.env.example`. Behind a
+proxy/load balancer also set `TRUST_PROXY=1`.
 
 ## Deploying to Vercel
 
